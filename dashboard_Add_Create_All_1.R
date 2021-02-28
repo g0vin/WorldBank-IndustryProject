@@ -1,4 +1,5 @@
 ## Dependencies-----------------------------------------------------------------
+# Install the packages needed to create the shiny application
 # install.packages("shiny")
 # install.packages("shinyWidgets")
 # install.packages("shinydashboard)
@@ -13,6 +14,7 @@
 # install.packages("plotly")
 # install.packages("ggplot2")
 
+#Call all the packages needed to create the shiny application
 library(shiny)
 library(shinyWidgets)
 library(shinydashboard)
@@ -20,7 +22,6 @@ library(shinyalert)       # for shinyalert()
 library(shinyBS)          # for bsButton()
 library(shinyjs)          # for hide() and show()
 library(rintrojs)         # for introBox()
-
 library(readr)            # for read_csv()
 library(tidyverse)
 library(DT)
@@ -29,8 +30,8 @@ library(plotly)
 library(ggplot2)
 
 ## SET WORKING DIRECTORY -------------------------------------------------------
-# set working directory to where your result file is located. Note if you are going to save the environment to create reusable filter inputs, this will also be the location the .RData file will be located
-setwd("C:/Users/Owner/Downloads/")
+# Set the working directory to where the result file is located. Note if you are going to save the environment to create reusable filter inputs, this will also be the location the .RData file will be located
+setwd("~/Downloads/")
 
 ## SAVE RData-------------------------------------------------------------------
 # Un-comment the code if you want to load the environment to re-use saved filters
@@ -104,8 +105,10 @@ wrap_text <- function(text){
                                 width: 200px;")
 }
 
-## Define UI--------------------------------------------------------------------
+## Create and Define the UI --------------------------------------------------------------------
 ui <- function(request){
+  
+  #Create the dashboard page using the dashboardPage function which has three parts: a header, a sidebar, and a body.
   dashboardPage(
     
     # THE TITLE AND THEME OF DASHBOARD------------------------------------------
@@ -118,6 +121,7 @@ ui <- function(request){
       titleWidth = 300,
       
       # The HELP dropdown menu
+      # Creates the help dropdown menu in case the user were to get stuck
       dropdownMenu(
         type = "notifications", 
         headerText = strong("HELP"),
@@ -157,9 +161,9 @@ ui <- function(request){
           text = wrap_text(help$text[8]),
           icon = icon("recycle")
         )
-      ), # dropdown menu - help
+      ), # End of dropdownMenu() - help dropdown
       
-      # Direct the user to the world bank home page when user click on "ABOUT US"
+      # Directs the user to the World Bank home page when user clicks on "ABOUT US"
       tags$li(
         a(
           strong("ABOUT US"),
@@ -170,12 +174,14 @@ ui <- function(request){
         ),
         class = "dropdown"
       )
-    ), # dashboard header
+    ), # End of dashboardHeader()
     
     ## SIDEBAR------------------------------------------------------------------
+    # Creates the side bar where the tabs are to create and customize the outputs
     dashboardSidebar(
       width = 325,
-      sidebarMenu(        
+      sidebarMenu(    
+        # Outputs the World Bank image seen in the sidebar
         HTML(paste0(
         "<br>",
         "<a href='https://www.worldbank.org/en/home' target='_blank'><img style = 'display: block; margin-left: auto; margin-right: auto;' src='world.svg' width = '186'></a>",
@@ -185,6 +191,7 @@ ui <- function(request){
       )),
         
         # Filter options--------------------------------------------------------
+      # Creates a new tab for filtering the dashboard to whatever is desired for the user output
         menuItem(
           startExpanded = T,
           introBox("Filters",
@@ -215,37 +222,41 @@ ui <- function(request){
                              
                            ),
                            btn_label = "Reset All")
-        ), # menuItem - filters
+        ), # End of menuItem() - Filters
         
+      # Line breaks
         br(),
         br(),
         
         # Plot Options----------------------------------------------------------
+      # Create a new tab for the plotting options
         menuItem(
           introBox("Plot Options",
                    data.step = 2,
                    data.intro = intro$text[2]),
           tabName = "plot_options",
           
-          # select the type of visuals you want to create
+          # Create the choices for the type of visuals you want to create
           selectizeInput(inputId = "plots", label = "Plot Options", choices = c("bar", "stack", "histogram", "line", "area", "pie", "bubble", "scatter", "boxplot")),
           selectizeInput(inputId = "x_val", label = "Please choose a variable as X", choices = colnames(results), selected = "Year"),
           selectizeInput(inputId = "y_val", label = "Please choose a variable as Y", choices = colnames(results), selected = "Value"),
           selectizeInput(inputId = "facet", label = "Please choose a variable to facet by", choices = colnames(results))
           
-        ), # menuItem - plot options
+        ), # End of menuItem() - Plot Options
         
+      # Line breaks
         br(),
         br(),
         
         # Transform Tables and Graphs Options-----------------------------------
+      # Create a new tab for transforming the tables and graph options
         menuItem(
           introBox("Transform Tables and Graphs Options",
                    data.step = 3,
                    data.intro = intro$text[3]),
           tabName = "transform_table_and_graph_options",
           
-          # Choose the type of conversion to perform on the Values
+          # Create the choices for the type of conversions to perform on the Values
           selectizeInput(inputId = "typeConv", label = "Select The Type of Conversion You Want",
                          choices = c("Difference Between Simulations", 
                                      "Percent Difference Between Simulations", 
@@ -260,7 +271,7 @@ ui <- function(request){
                            choices = levels(results$Simulation))
           ), 
           
-          # Only ask for usd gdp and lcu gdp if we are converting lcu to usd per billion ton
+          # Only ask for USD gdp and LCU gdp if we are converting LCU to USD per billion ton
           conditionalPanel(
             condition = "input.typeConv == 'LCU to USD Per Billion Ton'",
             numericInput(inputId = "gdp_usd", label = "Enter the Current GDP USD", value = 1e+9),
@@ -289,30 +300,32 @@ ui <- function(request){
                            selected = "Year")
           )
           
-        ), # menuItem - transform
+        ), # End of menuItem() - Transform Tables and Plot Options
         
+      # Line breaks
         br(),
         br(),
       
-        # Create all visuals button---------------------------------------------
+        # Create a button that ouputs all the visuals ---------------------------------------------
         actionButton("all_graphs", "Create", icon = icon("plus"), width = "90%") 
         
-      ) # sidebar menu
-    ), # dashboard side bar
+      ) # End of the sidebarMenu() function
+    ), # End of the DashboardSidebar() function
     
     ## BODY----------------------------------------------------------------------
+    # Create the body of the dashboard
     dashboardBody(
       
-      # Functions we need to call in order for the introduction tutorial, 
-      # the alert pop-up dialog, and the hide and show panel features to work
+      # Functions we need to call in order for the introduction tutorial, the alert pop-up dialog, and the hide and show panel features to work
       introjsUI(),
       useShinyalert(),
       useShinyjs(),        
       
       # BUTTONS AT THE TOP OF THE BODY------------------------------------------
+      # Create a row in the main panel (center of the dashboard) where there will be buttons to view the original data and the transformed data
       fluidRow(
         
-        # the buttons user click to switch between ORIGINAL and TRANSFORMED data panel
+        # The UI for buttons the user clicks to switch between ORIGINAL and TRANSFORMED data panel
         column(
           width = 5,
           introBox(
@@ -325,8 +338,8 @@ ui <- function(request){
                      icon = icon("spinner", class = "spinner-box"), 
                      style = "primary"),
             data.step = 4, data.intro = intro$text[4]
-          )
-        ), # column
+          ) # End of the introBox() function
+        ), # End of the column() function
         
         # The UI for the drop down save and load filters button on the right
         column(
@@ -334,7 +347,7 @@ ui <- function(request){
           offset = 5,
           align = 'right',
           
-          # Drop down button for saving a set of selected filters
+          # Create the drop down button for saving a set of selected filters
           dropdownButton(
             inputId = "save_filters_selection",
             inline = T,
@@ -344,15 +357,16 @@ ui <- function(request){
                             data.step = 6,
                             data.intro = intro$text[6]),
             
+            # Create the label for saving the filters
             textInput(inputId = "name_sav_filters", 
                       label = "Name The Set Of Filters You Want To Save", value = ""),
             
-            # Click to confirm the saving 
+            # Click to confirm the save
             actionButton("save", "Save")
             
-          ), # dropdownButton - save
+          ), # End of dropdownButton() - Saving the filters
           
-          # Drop down button for loading/deleting the saved filters
+          # Create the drop down button for loading/deleting the saved filters
           dropdownButton(
             inputId = "reuse_saved_filters",
             inline = T,
@@ -367,23 +381,22 @@ ui <- function(request){
                            label = "Select A Set Of Filters You Want To Reuse", 
                            choices = na.omit(sav_name)),
             
-            # Click to confirm the loading and saving. Both buttons need to place 
-            # in the column(); else the buttons won't render in a line but into 2 rows
+            # Click to confirm the loading and saving. Both buttons need to place in the column(); else the buttons won't render in a line but into 2 rows
             column(
               width = 5.5,
               actionButton("load", "Load", icon = icon("spinner"), width = 145),
               actionButton("delete", "Delete", icon = icon("trash"), width = 145)
             )
             
-          ) # dropdownButton - reuse
-        ) # column
-      ), # fluidRow
+          ) # End of dropdownButton() - Reusing the saved filters
+        ) # End of column()
+      ), # End of fluidRow()
      
+      #Line break
       br(),
       
       # OUTPUTS TO SHOW IN EACH PANEL--------------------------------------------
-      # In the ORIGINAL panel, only show the data table and graph that were create
-      # based on the original data set
+      # In the ORIGINAL panel, only show the data table and graph that were created based on the original data set
       fluidRow(
         div(
           id = "original_panel",
@@ -393,12 +406,11 @@ ui <- function(request){
                           dataTableOutput("table")),
                  br(),
                  plotlyOutput("plot")
-          )
-        )
-      ), # fluidRow - original panel
+          ) # End of column()
+        ) # End of div()
+      ), # End of fluidRow() - Original panel
       
-      # In the TRANSFORMED panel, only show the table and graph that were create
-      # based on the transformed data set
+      # In the TRANSFORMED panel, only show the table and graph that were created based on the transformed data set
       fluidRow(
         div(
           id = "transformed_panel",
@@ -407,31 +419,33 @@ ui <- function(request){
                  plotlyOutput("plotTransf")
           )
         )
-      ) # fluidRow - transformed panel
+      ) # End of fluidRow() - transformed panel
       
-    ) # dashboardBody
+    ) # End of dashboardBody()
     
-  ) # dashboardPage
+  ) # End of dashboardPage()
 
-} # ui
+} # End of the ui
 
 
 ## DEFINE SERVER---------------------------------------------------------------- 
+# Create the server which helps run the functions associated within the UI to create and manipulate the tables/graphs
 server <- function(input, output, session) {
   
-  # Show introduction welcome page
+  # Show the introduction welcome page
   observeEvent("", {
+    # showModal() to create the welcome page and Intro tour
     showModal(modalDialog(
       welcome_page,
       easyClose = TRUE,
       footer = tagList(
         
-        # Click on button to have a introduction tour
+        # Click on button to have a introduction tour to the shiny application. 
         actionButton(inputId = "intro", label = "INTRODUCTION TOUR", 
                      icon = icon("info-circle"), class = "btn-info")
         
-      ) 
-    ))
+      ) #End tagList() 
+    )) #End showModal() and modelDialog()
   })
   
   # Only show introduction welcome page once
@@ -484,7 +498,7 @@ server <- function(input, output, session) {
   # More info about the extension option in DT can be found here: https://rstudio.github.io/DT/extensions.html 
   output$table <- DT::renderDataTable({
     res_mod() %>%
-      pivot_wider(names_from = "Year", values_from = "Value") %>%
+      pivot_wider(names_from = "Year", values_from = "Value") %>% # pivot_wider() widens the data and increases the number of columns and decreases the number of rows
       datatable(extensions = c("Buttons"), 
                 options = list(scrollX = TRUE,
                                lengthMenu = list(c(10, 30, 50), c('10', '30', '50')),
@@ -493,115 +507,125 @@ server <- function(input, output, session) {
                                searching = F))
   })
   
-  # List of graph types - reusable function
+  # List of graph types used when we invoke a graph - reusable function
+  # Create a function called "graphs" which is used to create the graphs 
   graphs <- function(dat, plot_type, x, y, facet){
+    # If the selection is a barplot
     if(plot_type == "bar"){
       g <- ggplot(dat, aes(fill = as.factor(UQ(as.name(facet))),
                            text = paste0(facet, ": ", as.factor(UQ(as.name(facet)))),
                            y = UQ(as.name(y)),
                            x = UQ(as.name(x)))) +
-        geom_bar(position ="dodge", stat = "identity") +
-        scale_fill_brewer(palette = "Blues") +
-        guides(fill = guide_legend(nrow = 1, byrow = TRUE, title = facet)) +
-        theme_minimal() +
-        theme(legend.position = "bottom", legend.justification = "left")
-      p <- ggplotly(g, tooltip = c("x", "y", "text"))
+        geom_bar(position ="dodge", stat = "identity") + # dodge is to ensure that the bar plots are not stacked and identity is so we assign the y-values
+        scale_fill_brewer(palette = "Blues") + # Blue color palette
+        guides(fill = guide_legend(nrow = 1, byrow = TRUE, title = facet)) + # Creates the guides for each scale
+        theme_minimal() + # Assign a minimal look for the theme
+        theme(legend.position = "bottom", legend.justification = "left") # Create a legend and place it to the bottom left of the plot
+      p <- ggplotly(g, tooltip = c("x", "y", "text")) # Make the plot into plotly type 
     }
+    # If the selection is a stacked barplot
     if(plot_type == "stack"){
       g <- ggplot(dat, aes(fill = as.factor(UQ(as.name(facet))),
                            text = paste0(facet, ": ", as.factor(UQ(as.name(facet)))),
                            y = UQ(as.name(y)),
                            x = UQ(as.name(x)))) +
-        geom_bar(position ="stack", stat = "identity") +
-        scale_fill_brewer(palette = "Blues") +
-        guides(fill = guide_legend(nrow = 1, byrow = TRUE, title = facet)) +
-        theme_minimal() + 
-        theme(legend.position = "bottom", legend.justification = "left")
-      p <- ggplotly(g, tooltip = c("x", "y", "text"))
+        geom_bar(position ="stack", stat = "identity") + # Stack is to ensure that the bar plots are stacked
+        scale_fill_brewer(palette = "Blues") + # Blue color palette
+        guides(fill = guide_legend(nrow = 1, byrow = TRUE, title = facet)) + # Creates the guides for each scale
+        theme_minimal() + # Assign a minimal look for the theme
+        theme(legend.position = "bottom", legend.justification = "left") # Create a legend and place it to the bottom left of the plot
+      p <- ggplotly(g, tooltip = c("x", "y", "text")) # Make the plot into plotly type 
     }
+    # If the selection is a histogram
     if(plot_type == "histogram"){
       g <- ggplot(dat, aes(fill = as.factor(UQ(as.name(facet))),
                            text = paste0(facet, ": ", as.factor(UQ(as.name(facet)))),
-                           x = UQ(as.name(x)))) +
-        geom_histogram(position="identity",stat = 'count') +
-        scale_fill_brewer(palette = "Blues") +
-        guides(fill = guide_legend(nrow = 1, byrow = TRUE, title = facet)) +
-        theme_minimal() +
-        theme(legend.position = "bottom", legend.justification = "left")
-      p <- ggplotly(g, tooltip = c("x", "y", "text"))
+                           x = UQ(as.name(x)))) + # Change the types of the following aesthetics 
+        geom_histogram(position="identity",stat = 'count') + # Function to initialize the histogram
+        scale_fill_brewer(palette = "Blues") + # Blue color palette
+        guides(fill = guide_legend(nrow = 1, byrow = TRUE, title = facet)) + # Creates the guides for each scale
+        theme_minimal() + # Assign a minimal look for the theme
+        theme(legend.position = "bottom", legend.justification = "left") # Create a legend and place it to the bottom left of the plot
+      p <- ggplotly(g, tooltip = c("x", "y", "text")) # Make the plot into plotly type 
     }
+    # If the selection is a line plot
     if(plot_type == "line"){
       g <- ggplot(dat, aes(group = as.factor(UQ(as.name(facet))),
                            color = as.factor(UQ(as.name(facet))),
                            text = paste0(facet, ": ", as.factor(UQ(as.name(facet)))),
                            y = UQ(as.name(y)),
-                           x = UQ(as.name(x)))) +
-        geom_line() +
-        geom_point()+
-        scale_color_brewer(facet, palette = "Blues") + 
-        theme_minimal() +
-        theme(legend.position = "bottom", legend.justification = "left")
-      p <- ggplotly(g, tooltip = c("x", "y", "text"))
+                           x = UQ(as.name(x)))) + # Change the types of the following aesthetics 
+        geom_line() + # Function to initialize the line
+        geom_point()+ # Function to initialize the points
+        scale_color_brewer(facet, palette = "Blues") + # Blue color palette
+        theme_minimal() + # Assign a minimal look for the theme
+        theme(legend.position = "bottom", legend.justification  = "left") # Create a legend and place it to the bottom left of the plot
+      p <- ggplotly(g, tooltip = c("x", "y", "text")) # Make the plot into plotly type 
     }
+    # If the selection is an area plot
     if(plot_type == "area"){
       g <- ggplot(dat, aes(fill = as.factor(UQ(as.name(facet))),
                            group = as.factor(UQ(as.name(facet))),
                            color = as.factor(UQ(as.name(facet))),
                            text = paste0(facet, ": ", as.factor(UQ(as.name(facet)))),
                            y = UQ(as.name(y)),
-                           x = UQ(as.name(x)))) +
-        geom_area() +
-        scale_fill_brewer(facet, palette = "Blues") +
-        scale_color_brewer(facet, palette = "Blues") +
-        theme_minimal() +
-        theme(legend.position = "bottom", legend.justification = "left")
-      p <- ggplotly(g, tooltip = c("x", "y", "text"))
+                           x = UQ(as.name(x)))) + # Change the types of the following aesthetics 
+        geom_area() + # Function to initialize the area
+        scale_fill_brewer(facet, palette = "Blues") + # Blue color palette
+        scale_color_brewer(facet, palette = "Blues") + # Blue color palette
+        theme_minimal() + # Assign a minimal look for the theme
+        theme(legend.position = "bottom", legend.justification = "left") # Create a legend and place it to the bottom left of the plot
+      p <- ggplotly(g, tooltip = c("x", "y", "text")) # Make the plot into plotly type 
     }
+    # If the selection is a pie chart
     if(plot_type == "pie"){
       g <- ggplot(dat, aes(fill = UQ(as.name(facet)),
                            x = "",
-                           y = UQ(as.name(y)))) +
-        geom_bar(position ="dodge", stat = "identity") +
-        coord_polar("y", start = 0) +
-        scale_fill_brewer(palette = "Blues") +
-        guides(fill = guide_legend(nrow = 1, byrow = TRUE)) +
-        theme_minimal() +
-        theme(legend.position = "bottom", legend.justification = "left")
-      p <- ggplotly(g)
+                           y = UQ(as.name(y)))) + # Change the types of the following aesthetics 
+        geom_bar(position ="dodge", stat = "identity") + 
+        coord_polar("y", start = 0) + # Function to initialize the pie
+        scale_fill_brewer(palette = "Blues") + # Blue color palette
+        guides(fill = guide_legend(nrow = 1, byrow = TRUE)) + # Creates the guides for each scale
+        theme_minimal() + # Assign a minimal look for the theme
+        theme(legend.position = "bottom", legend.justification = "left") # Create a legend and place it to the bottom left of the plot
+      p <- ggplotly(g) # Make the plot into plotly type 
     }
+    # If the selection is a bubble plot
     if(plot_type == "bubble"){
       g <- ggplot(dat, aes(value = UQ(as.name(facet)),
                            y = UQ(as.name(y)),
-                           x = UQ(as.name(x)))) +
-        geom_point() +
-        scale_fill_brewer(palette = "Blues") +
-        guides(fill = guide_legend(nrow = 1, byrow = TRUE)) +
-        theme_minimal() +
-        theme(legend.position = "bottom", legend.justification = "left")
-      p <- ggplotly(g)
+                           x = UQ(as.name(x)))) + # Change the types of the following aesthetics 
+        geom_point() + # Function to initialize the points and bubble
+        scale_fill_brewer(palette = "Blues") + # Blue color palette
+        guides(fill = guide_legend(nrow = 1, byrow = TRUE)) + # Creates the guides for each scale
+        theme_minimal() + # Assign a minimal look for the theme
+        theme(legend.position = "bottom", legend.justification = "left") # Create a legend and place it to the bottom left of the plot
+      p <- ggplotly(g) # Make the plot into plotly type 
     }
+    # If the selection is a scatter plot
     if(plot_type == "scatter"){
       g <- ggplot(dat, aes(color = as.factor(UQ(as.name(facet))),
                            text = paste0(facet, ": ", as.factor(UQ(as.name(facet)))),
                            y = UQ(as.name(y)),
-                           x = UQ(as.name(x)))) +
-        geom_point() +
-        scale_color_brewer(facet, palette = "Blues") +
-        theme_minimal() +
-        theme(legend.position = "bottom", legend.justification = "left")
-      p <- ggplotly(g, tooltip = c("x", "y", "text"))
+                           x = UQ(as.name(x)))) + # Change the types of the following aesthetics 
+        geom_point() + # Function to initialize the points
+        scale_color_brewer(facet, palette = "Blues") + # Blue color palette
+        theme_minimal() + # Assign a minimal look for the theme
+        theme(legend.position = "bottom", legend.justification = "left") # Create a legend and place it to the bottom left of the plot
+      p <- ggplotly(g, tooltip = c("x", "y", "text")) # Make the plot into plotly type 
     }
+    # If the selection is a box plot
     if(plot_type == "boxplot"){
-      g <- ggplot(dat, aes(fill = as.factor(UQ(as.name(facet))),
+      g <- ggplot(dat, aes(fill = as.factor(UQ(as.name(facet))), 
                            text = paste0(facet, ": ", as.factor(UQ(as.name(facet)))),
                            y = UQ(as.name(y)),
-                           x = UQ(as.name(x)))) +
-        geom_boxplot() +
-        scale_fill_brewer(palette = "Blues") +
-        guides(fill = guide_legend(nrow = 1, byrow = TRUE, title = facet)) +
-        theme_minimal() +
-        theme(legend.position = "bottom", legend.justification = "left")
-      p <- ggplotly(g, tooltip = c("x", "y", "text"))
+                           x = UQ(as.name(x)))) + # Change the types of the following aesthetics 
+        geom_boxplot() + # Function to initialize the box plot
+        scale_fill_brewer(palette = "Blues") + # Blue color palette
+        guides(fill = guide_legend(nrow = 1, byrow = TRUE, title = facet)) + # Creates the guides for each scale
+        theme_minimal() + # Assign a minimal look for the theme
+        theme(legend.position = "bottom", legend.justification = "left") # Create a legend and place it to the bottom left of the plot
+      p <- ggplotly(g, tooltip = c("x", "y", "text")) # Make the plot into plotly type 
     }
     
     # Changes the size of the ticks on the axes
@@ -618,44 +642,49 @@ server <- function(input, output, session) {
     
     # return the plotly object
     return(p)
-  }
+  } # End of the graphs function we created.
   
-  # Reference for % diff: Sheet t4, f4, f6, f8, f9, t3, t6, f12, f13, f14, f15, t5, f17, f18, f20, f21, f22, f23, f25, t7, f27, f28, f29, Sectors per, and parts of these sheets (f26 & t5 & t3 & t0 & NIA per & Summary per)
-  # Percent-change formula between simulation 
-  
-  # Reference for diff only: f7, f10, f16
-  # Difference between simulation
-  
-  # Reference: f5, f11, f19, f24 
-  # Note: exr in the Excel represent the conversion of USD per 1 LCU
-  # formula to convert value from LCU to USD per 1 billion ton of selected sector (ie co2) = Value*exr/1000000000
-  
-  # Reference: f1
-  # find the proportion for each sector per year
+ 
   
   # Reference: f2
-  # change the value to percentage
+  # Create a function called "transf" to change the values to percentage
   transf <- function(sim1, sim2, var, sec, qual, yr, formula){
     val_sim1 <- res_mod() %>%
-      filter(Simulation == sim1, Variable == var, Sector == sec, Qualifier == qual, Year == yr) %>% select(Value)
+      filter(Simulation == sim1, Variable == var, Sector == sec, Qualifier == qual, Year == yr) %>% # Filter the data based on our selections
+      select(Value) # Only have the value column display
     
+    # Reference for diff only: f7, f10, f16
+    # Difference between simulation
     if(formula == "Difference Between Simulations"){
       val_sim2 <- results %>%
-        filter(Simulation == sim2, Variable == var, Sector == sec, Qualifier == qual, Year == yr) %>% select(Value)
-      return(round(val_sim1-val_sim2, 2))
+        filter(Simulation == sim2, Variable == var, Sector == sec, Qualifier == qual, Year == yr) %>% # Filter the data based on our selections
+        select(Value) # Only have the value column display
+      return(round(val_sim1-val_sim2, 2)) # Return the values based on this formula
     }
+    
+    # Reference for % diff: Sheet t4, f4, f6, f8, f9, t3, t6, f12, f13, f14, f15, t5, f17, f18, f20, f21, f22, f23, f25, t7, f27, f28, f29, Sectors per, and parts of these sheets (f26 & t5 & t3 & t0 & NIA per & Summary per)
+    # Percent-change formula between simulation 
     if(formula == "Percent Difference Between Simulations"){
       val_sim2 <- results %>%
-        filter(Simulation == sim2, Variable == var, Sector == sec, Qualifier == qual, Year == yr) %>% select(Value)
-      return(round(val_sim1/val_sim2*100-100, 2))
+        filter(Simulation == sim2, Variable == var, Sector == sec, Qualifier == qual, Year == yr) %>% # Filter the data based on our selections
+        select(Value) # Only have the value column display
+      return(round(val_sim1/val_sim2*100-100, 2)) # Return the values based on this formula
     }
+    
+    # Reference: f1
+    # find the proportion for each sector per year
     if(formula == "Proportion of Sector Per Year"){
       obs_cat2 <- res_mod() %>%
-        filter(Simulation == sim1, Variable == var, Qualifier == qual, Year == yr) %>% select(Value) %>% summarise(sumval=sum(Value))
-
-      return(round(val_sim1/sum(obs_cat2$sumval), 2))
+        filter(Simulation == sim1, Variable == var, Qualifier == qual, Year == yr) %>% # Filter the data based on our selections
+        select(Value) %>%  # Only have the value column display
+        summarise(sumval=sum(Value)) # Sum up the values
+      return(round(val_sim1/sum(obs_cat2$sumval), 2)) # Return the values based on this formula
     }
-    if(formula == "LCU to USD Per Billion Ton"){
+    
+    # Reference: f5, f11, f19, f24 
+    # Note: exr in the Excel represent the conversion of USD per 1 LCU
+    # formula to convert value from LCU to USD per 1 billion ton of selected sector (ie co2) = Value*exr/1000000000
+    if(formula == "LCU to USD Per Billion Ton"){ 
       exr <- input$gdp_usd/input$gdp_lcu
       bil <- 1000000000
 
@@ -673,7 +702,7 @@ server <- function(input, output, session) {
                           "param-filters-Sector", "param-filters-Qualifier", 
                           "param-filters-Year")
     
-    # If the user didn't select filters from up to 3 drop-down box, a modal diaglog will pop up.
+    # If the user didn't select filters from up to 3 drop-down box, a modal dialog will pop up.
     # No graphs will be rendered in the ORIGINAL & TRANSFORMED PANEL
     length_filters <- sapply(all_filters_name, function(x){ length(input[[x]]) })
     if(sum(length_filters == 0) > 3){
@@ -693,14 +722,16 @@ server <- function(input, output, session) {
     # Show notification when this is done successfully
     p <- graphs(res_mod(), input$plots, input$x_val, input$y_val, input$facet)
     
+    #Assign the plot values p to the output screen as a new name called plot and show it
     output$plot <- renderPlotly({ p })
     show("plot")
+    #Creates notification when plot is successfully created
     showNotification(id = "graph_created", 
                      paste("Graph Created Successfully For Original Data"),
                      closeButton = T, type = "message")
     
     
-    # Perform the transformation user had selected on the Values
+    # Perform the transformation the user had selected on the Values
     pivotTab <- res_mod()
     pivotTab$Change <- NA
     for(r in 1:nrow(pivotTab)){
@@ -723,7 +754,7 @@ server <- function(input, output, session) {
     output$transfTab <- DT::renderDataTable({
       pivotTab %>%
         select(!Value) %>%
-        pivot_wider(names_from = "Year", values_from = "Change") %>%
+        pivot_wider(names_from = "Year", values_from = "Change") %>% #pivotwider() widens the data and increases the number of columns and decreases the number of rows
         datatable(extensions = c("Buttons"), 
                   options = list(scrollX = TRUE,
                                  lengthMenu = list(c(10, 30, 50), c('10', '30', '50')),
@@ -731,31 +762,33 @@ server <- function(input, output, session) {
                                  buttons = c('pageLength', 'copy', 'csv', 'excel'),
                                  searching = F))
       
-    })
-      
+    }) # End for renderDataTable()
+    
+    # Output the transformed table and create a notification when it is successful  
     show("transfTab")
     showNotification(id = "transf_table_created", 
                      paste("Table Created Successfully For Transformed Data"), 
                      closeButton = T, type = "message")
  
-     
+    # Assign a new variable called p2 which plots the transformed plots  
     p2 <- graphs(pivotTab, input$plotType, input$x_val_transf, 
                 input$y_val_transf, input$facet_transf)
-    
     output$plotTransf <- renderPlotly({ p2 })
+    
+    #Output the transformed table and create a notification when it is successful  
     show("plotTransf")
     showNotification(id = "transf_graph_created", 
                      paste("Graph Created Successfully For Transformed Data"), 
                      closeButton = T, type = "message")
     
-  })
+  }) # End for observeEvent()
   
   # Perform the saving when the user click on 'Save'
   # Show notification on the side when add, cancel, or update when it runs successfully
   observeEvent(input$save, {
     name <- input$name_sav_filters
     
-    # list of inputs we won't save 
+    # Create list of inputs we won't save 
     dont_save <- c("sidebarCollapsed", "delete", "transformed", "original", 
                    "createTransf", "graph", "intro", "sidebarItemExpanded", 
                    "`param-filters-reset_all`", "save", "load", 
@@ -770,7 +803,7 @@ server <- function(input, output, session) {
       
       # Update the inputs selection if user clicked "Update"; else do nothing
       observeEvent(input$shinyalert, {
-        # Update
+        # Update the inputs selection
         if(input$shinyalert == T){
           
           for(i in names(reactiveValuesToList(input))){
@@ -780,13 +813,13 @@ server <- function(input, output, session) {
           }
           showNotification(id = "updated", paste("Updated ", name, " Successfully"), 
                            closeButton = T, type = "message")
-          # Do nothing
+          # Do nothing otherwise; don't update the selection
         } else {
           showNotification(id = "cancel", paste("Cancel updating ", name), 
                            closeButton = T, type = "message")
         }
         
-      })
+      }) # End of observeEvent()
       
       # If name is not in use, then create a new one and save its selected inputs
     } else {
@@ -832,7 +865,7 @@ server <- function(input, output, session) {
                      closeButton = T, type = "message")
   })
   
-} # server
+} # End of the server
 
 ## CREATE SHINY APP-------------------------------------------------------------  
 # Connect the ui (front-end) with the server (back-end)
