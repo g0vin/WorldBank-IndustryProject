@@ -180,7 +180,7 @@ ui <- function(request){
             condition = "input.displayTransf == 'Graph'",
             selectizeInput(inputId = "plotType", label = "Plot Options", 
                            choices = c("bar", "stack", "histogram", "line", 
-                                       "area", "pie", "bubble", "scatter", "boxplot")),
+                                       "area", "bubble", "scatter", "boxplot")),
             selectizeInput(inputId = "x_val_transf", label = "Please choose a variable as X", 
                            choices = c(colnames(results %>% select(!Value)), "Change"), 
                            selected = "Sector"),
