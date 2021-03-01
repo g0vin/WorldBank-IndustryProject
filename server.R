@@ -152,8 +152,7 @@ server <- function(input, output, session) {
       g <- ggplot(dat, aes(size = UQ(as.name(facet)),
                            y = UQ(as.name(y)),
                            x = UQ(as.name(x)))) + # Change the types of the following aesthetics 
-        geom_point() + # Function to initialize the points and bubble
-        scale_fill_brewer(palette = "Blues") + # Blue color palette
+        geom_point(alpha=0.4) + # Function to initialize the points and bubble
         guides(fill = guide_legend(nrow = 1, byrow = TRUE)) + # Creates the guides for each scale
         theme_minimal() + # Assign a minimal look for the theme
         theme(legend.position = "bottom", legend.justification = "left") # Create a legend and place it to the bottom left of the plot
