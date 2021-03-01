@@ -73,7 +73,7 @@ setwd("C:/Users/Owner/Documents/GSB-503 Industry Project (World Bank)/WorldBank-
 source("Intro_Help_Pages.R", local = T)
 
 # References the ui.R file where the ui(front-end) code is located
-source(" ui.R", local = T)
+source("ui.R", local = T)
 
 # References the server.R file where the server(back-end) code is located
 source("server.R", local = T)
