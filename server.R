@@ -268,7 +268,7 @@ server <- function(input, output, session) {
   # Create the selected visuals when the 'Create' button is clicked for both panels
   observeEvent(input$all_graphs, {
     
-    all_filters_name <- c("param-filters-Simulation", "param-filters-Varaible", 
+    all_filters_name <- c("param-filters-Simulation", "param-filters-Variable", 
                           "param-filters-Sector", "param-filters-Qualifier", 
                           "param-filters-Year")
     
