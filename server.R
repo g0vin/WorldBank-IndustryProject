@@ -147,19 +147,6 @@ server <- function(input, output, session) {
         theme(legend.position = "bottom", legend.justification = "left") # Create a legend and place it to the bottom left of the plot
       p <- ggplotly(g, tooltip = c("x", "y", "text")) # Make the plot into plotly type 
     }
-    # If the selection is a pie chart
-    if(plot_type == "pie"){
-      g <- ggplot(dat, aes(fill = UQ(as.name(facet)),
-                           x = "",
-                           y = UQ(as.name(y)))) + # Change the types of the following aesthetics 
-        geom_bar(position ="dodge", stat = "identity") + 
-        coord_polar("y", start = 0) + # Function to initialize the pie
-        scale_fill_brewer(palette = "Blues") + # Blue color palette
-        guides(fill = guide_legend(nrow = 1, byrow = TRUE)) + # Creates the guides for each scale
-        theme_minimal() + # Assign a minimal look for the theme
-        theme(legend.position = "bottom", legend.justification = "left") # Create a legend and place it to the bottom left of the plot
-      p <- ggplotly(g) # Make the plot into plotly type 
-    }
     # If the selection is a bubble plot
     if(plot_type == "bubble"){
       g <- ggplot(dat, aes(size = UQ(as.name(facet)),
