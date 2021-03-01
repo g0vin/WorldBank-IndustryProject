@@ -29,22 +29,26 @@ library(rlang)            # for UQ()
 library(plotly)
 library(ggplot2)
 
-## SET WORKING DIRECTORY -------------------------------------------------------
-# Set the working directory to where the result file is located. Note if you are going to save the environment to create reusable filter inputs, this will also be the location the .RData file will be located
-setwd("~/Downloads/")
-
-## SAVE RData-------------------------------------------------------------------
-# Un-comment the code if you want to load the environment to re-use saved filters
+## LOAD RData-------------------------------------------------------------------
+# Un-comment the code if you want to load the environment to re-use saved filters.
+# Don't forget to specify the path the RData file is saved in setwd()
 # Before that we need to clear the environment (so whatever the client save on their own will be erased when the app refreshed but not the one we pre-loaded in for them)
+
 # rm(list=ls())
+# setwd("C:/Users/Owner/Downloads")
 # load("saved_filters.RData")
 
-## LOAD RData-------------------------------------------------------------------
+
+## SAVE RData-------------------------------------------------------------------
 # Un-comment if you want to save the environment. As long as the environment is saved before you close RStudio, you can load it back in and use the saved filters again.
+# Don't forget to specify the path you want the RData file to save in setwd()
 # Only do this step after you finish using the app. Only run this line of code individually.
+
+# setwd("C:/Users/Owner/Downloads")
 # if(length(sav_name) > 1 & length(inputs) > 0){
 #   save(sav_name, inputs, file = "saved_filters.RData")
 # }
+
 
 ## GLOBAL VARIABLES-------------------------------------------------------------
 # Used to stored sets of selected inputs we want to save with their names
@@ -52,11 +56,14 @@ setwd("~/Downloads/")
 if(!exists("sav_name")){ sav_name <<- NA}
 if(!exists("inputs")) { inputs <<- list()}
 
+
 ## LOAD RESULTS FILE -----------------------------------------------------------
-# Read in the results file and do some data preparation
+# Read in the results file and do some data preparation. 
+# Don't forget to change the path to where the results file is located
 # Any character data will be converted into factor variable. Same for the Year variable.
-results <- read_csv("results.csv")
+results <- read_csv("C:/Users/Owner/Downloads/results.csv")
 results <- results %>% mutate_if(is.character, as.factor) %>% mutate(Year = factor(Year))
+
 
 ## CONTENT FOR INTRODUCTION & HELP MENU----------------------------------------- 
 # The text box content for each step in the introduction tutorial
