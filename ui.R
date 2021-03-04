@@ -162,7 +162,7 @@ ui <- function(request){
                         || input.typeConv == 'Percent Difference Between Simulations'",
             selectizeInput(inputId = "sim2", label = "Select The Simulation For Comparison",
                            choices = levels(results$Simulation))
-          ), 
+          ),
           
           # Only ask for USD gdp and LCU gdp if we are converting LCU to USD per billion ton
           conditionalPanel(
@@ -191,8 +191,15 @@ ui <- function(request){
                            label = "Please choose a variable to facet by", 
                            choices = c(colnames(results %>% select(!Value)), "Change"), 
                            selected = "Year")
+          ),
+          #####################################################
+          conditionalPanel(
+            condition = "input.typeConv == 'Proportion of Sector Per Year'
+                        & input.displayTransf == 'Graph'",
+            selectizeInput(inputId = "plotType", label = "Plot Options",
+                           choices = c("bar", "stack"))
           )
-          
+          #########################################################
         ), # End of menuItem() - Transform Tables and Plot Options
         
         # Line breaks
