@@ -190,16 +190,17 @@ ui <- function(request){
             selectizeInput(inputId = "facet_transf", 
                            label = "Please choose a variable to facet by", 
                            choices = c(colnames(results %>% select(!Value)), "Change"), 
-                           selected = "Year")
-          ),
-          #####################################################
-          conditionalPanel(
-            condition = "input.typeConv == 'Proportion of Sector Per Year'
+                           selected = "Year"),
+            ###############
+            conditionalPanel(
+              condition = "input.typeConv == 'Proportion of Sector Per Year'
                         & input.displayTransf == 'Graph'",
-            selectizeInput(inputId = "plotType", label = "Plot Options",
-                           choices = c("bar", "stack"))
+              selectizeInput(inputId = "plotType", label = "Plot Options",
+                             choices = c("bar", "stack"))
+            )
+            #################
           )
-          #########################################################
+      
         ), # End of menuItem() - Transform Tables and Plot Options
         
         # Line breaks
