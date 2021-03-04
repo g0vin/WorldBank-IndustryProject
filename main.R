@@ -67,7 +67,7 @@ results <- results %>% mutate_if(is.character, as.factor) %>% mutate(Year = fact
 ## READ R CODE FROM OTHER FILES-------------------------------------------------
 # Make sure we are in the right directory to run the other code below. 
 # The path should be where ui.R, server.R, and other related R files should be located.
-setwd("C:/Users/Owner/Documents/GSB-503 Industry Project (World Bank)/WorldBank-IndustryProject/Separated Code")
+setwd("C:/Users/Owner/Documents/GSB-503 Industry Project (World Bank)/WorldBank-IndustryProject")
 
 # References the Intro_Help_Pages.R file where the code for creating the intro & help pages are located
 source("Intro_Help_Pages.R", local = T)
