@@ -3,8 +3,8 @@
 intro <- data.frame(
   step = c(1:8),
   text = c("Choose from 5 different selection criteria to refine you selection.",
-           "Here are some graph options you can choose to generate in the <b>ORIGINAL DATA</b> panel. Don't forget to click on <b>CREATE</b> if you want the visuals to show up.",
-           "Here are the options to transform the values to percentage or other formats. A table  or graphs will appear in the <b>TRANSFORMED DATA</b> panel once a selection is made",
+           "Here are some graph options you can choose to generate in the <b>ORIGINAL DATA</b> panel. Don't forget to click on <b>CREATE</b> if you want the visuals to show up!",
+           "Here are the options to transform the values to percentage or other formats. The table/graph will appear in the <b>TRANSFORMED DATA</b> panel once a selection is made",
            "You start automatically in the <b>ORIGINAL DATA</b> panel. The first object you will see in this panel is the full dataset. Check the other panel for transformed data value",
            "Here's the original data set. Once, you select some filters, the table will automatically update. On the top, there are options to download and copy the data that is on this visible page.",
            "You can save the filters for later use. Don't forget to name the set of filters",
@@ -16,9 +16,9 @@ intro <- data.frame(
 # The content for the welcome page
 welcome_page <- HTML(
   "<h2><span style='color: #009FDA;'><b>WELCOME TO WORLD BANK!</b></span> <br> <hr></h2>
-                    Here's a website where you can go on, explore the data, and do some exploratory analysis. We have pre-loaded some useful filters. You can choose one set of filters we have given you, load it back into the system, and play around with their visuals OR you can create your own combinations of filters. <br> <hr>
-                    Click on the <span style='color: #0000A0;'><b>INTRODUCTION TOUR</b></span> button and it will give you a tour around the website to get you familarize with the buttons and the options we offer to you. If you need more help after the introduction tour, please click on the <span style='color: #0000A0;'><b>?</b></span> icon. <br> <br>
-                    <span style='color: #0000A0;'><b>We hope you have a wonderful adventure!</b></span>"
+                    Here's our interactive dashboard where you can explore World Bank data based on models and do some exploratory analysis. We have pre-loaded some useful filters. You can choose one set of filters we have given you, load it back into the system, and play around with their visuals OR you can create your own combinations of filters. <br> <hr>
+                    Click on the <span style='color: #0000A0;'><b>INTRODUCTION TOUR</b></span> button and it will give you a tour around the dashboard to get you familarized with the buttons and the options we offer to you. If you need more help after the introduction tour, please click on the <span style='color: #0000A0;'><b>?</b></span> icon. <br> <br>
+                    <span style='color: #0000A0;'><b>We hope you enjoy the board!</b></span>"
 )
 
 # The content for each step in the dropdown help menu
