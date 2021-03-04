@@ -159,9 +159,17 @@ server <- function(input, output, session) {
                      closeButton = T, type = "message")
     
     # Assign a new variable called p2 which plots the transformed plots  
+   if(input$typeConv == "Propotion of Sector Per Year") {
+     p2 <- graphs(pivotTab, input$plotType2, input$x_val_transf, 
+                 input$y_val_transf, input$facet_transf)
+    output$plotTransf <- renderPlotly({ p2 })
+  }
+  else {
     p2 <- graphs(pivotTab, input$plotType, input$x_val_transf, 
                  input$y_val_transf, input$facet_transf)
     output$plotTransf <- renderPlotly({ p2 })
+  }
+    
     
     #Output the transformed table and create a notification when it is successful  
     show("plotTransf")
