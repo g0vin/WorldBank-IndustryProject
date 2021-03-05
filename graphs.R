@@ -1,6 +1,20 @@
 # List of graph types used when we invoke a graph - reusable function
 # Create a function called "graphs" which is used to create the graphs 
 graphs <- function(dat, plot_type, x, y, facet){
+  
+  # Wrap the values for each specified column.
+  # But don't wrap the "Value" column
+  # This is so labels and keys on the axes and legends will not cluttered the plot when the words got too long
+  if(x != "Value"){
+    dat[, x] <- str_wrap(dat[, x], 20)
+  }
+  if(y != "Value"){
+    dat[, y] <- str_wrap(dat[, y], 20)
+  }
+  if(facet != "Value"){
+    dat[, facet] <- str_wrap(dat[, facet], 20)
+  }
+  
   # If the selection is a barplot
   if(plot_type == "bar"){
     g <- ggplot(dat, aes(fill = as.factor(UQ(as.name(facet))),
