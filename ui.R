@@ -180,15 +180,15 @@ ui <- function(request){
             condition = "input.displayTransf == 'Graph'",
             conditionalPanel(
               condition = "input.typeConv != 'Proportion of Sector Per Year'",
-              selectizeInput(inputId = "plotType", label = "Plot Options", 
-                           choices = c("bar", "stack", "histogram", "line", 
+              selectizeInput(inputId = "plotType", label = "Plot Options",
+                             choices = c("bar", "stack", "histogram", "line", 
                                        "area", "bubble", "scatter", "boxplot"))
             ),
             conditionalPanel(
               condition = "input.typeConv == 'Proportion of Sector Per Year'",
               selectizeInput(inputId = "plotType2", label = "Plot Options", 
                              choices = c("bar", "stack"))
-              ),
+            ),
             selectizeInput(inputId = "x_val_transf", label = "Please choose a variable as X", 
                            choices = c(colnames(results %>% select(!Value)), "Change"), 
                            selected = "Sector"),
