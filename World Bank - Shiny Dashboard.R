@@ -8,6 +8,8 @@
 # install.packages("shinyjs)
 # install.packages("rintrojs")
 # install.packages("readr")
+# install.packages("readxl")
+# install.packages("plyr")
 # install.packages("tidyverse")
 # install.packages("DT")
 # install.packages("rlang")
@@ -23,6 +25,8 @@ library(shinyBS)          # for bsButton()
 library(shinyjs)          # for hide() and show()
 library(rintrojs)         # for introBox()
 library(readr)            # for read_csv()
+library(readxl)           # for read_excel()
+library(plyr)             # for mapvalues()
 library(tidyverse)
 library(DT)
 library(rlang)            # for UQ()
@@ -63,6 +67,33 @@ if(!exists("inputs")) { inputs <<- list()}
 # Any character data will be converted into factor variable. Same for the Year variable.
 results <- read_csv("C:/Users/Owner/Downloads/results.csv")
 results <- results %>% mutate_if(is.character, as.factor) %>% mutate(Year = factor(Year))
+
+
+## CHANGE ABBREV TO READABLE TEXT-----------------------------------------------
+# Load the dictionary file that contains the real names of the abbreviations
+# Don't forget to change the path to where the dictionary file is located
+dict <- read_excel("C:/Users/Owner/Downloads/results real names.xlsm",
+                   sheet = "Lookup Table")
+
+# Take out all empty columns
+emptycols <- colSums(is.na(dict)) == nrow(dict)
+dict <- dict[!emptycols]
+
+# Rename the columns
+names(dict) <- c("Sim", "sim_name", "Var", "var_name", "Sec", "sec_name", "Qual", "qual_name")
+
+# Convert the abbreviations to readable text
+results$Simulation <- mapvalues(x = results$Simulation,
+                                from = dict$Sim, to = dict$sim_name,
+                                warn_missing = F)
+results$Variable <- mapvalues(x = results$Variable,
+                              from = dict$Var, to = dict$var_name,
+                              warn_missing = F)
+results$Sector <- mapvalues(x = results$Sector,
+                            from = dict$Sec, to = dict$sec_name, warn_missing = F)
+results$Qualifier <- mapvalues(x = results$Qualifier,
+                               from = dict$Qual, to = dict$qual_name,
+                               warn_missing = F)
 
 
 ## CONTENT FOR INTRODUCTION & HELP MENU----------------------------------------- 
@@ -517,6 +548,20 @@ server <- function(input, output, session) {
   # List of graph types used when we invoke a graph - reusable function
   # Create a function called "graphs" which is used to create the graphs 
   graphs <- function(dat, plot_type, x, y, facet){
+    
+    # Wrap the values for each specified column.
+    # But don't wrap the "Value" column
+    # This is so labels and keys on the axes and legends will not cluttered the plot when the words got too long
+    if(x != "Value"){
+      dat[, x] <- str_wrap(dat[, x], 20)
+    }
+    if(y != "Value"){
+      dat[, y] <- str_wrap(dat[, y], 20)
+    }
+    if(facet != "Value"){
+      dat[, facet] <- str_wrap(dat[, facet], 20)
+    }
+    
     # If the selection is a barplot
     if(plot_type == "bar"){
       g <- ggplot(dat, aes(fill = as.factor(UQ(as.name(facet))),
