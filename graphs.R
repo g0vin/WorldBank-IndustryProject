@@ -3,15 +3,15 @@
 graphs <- function(dat, plot_type, x, y, facet){
   
   # Wrap the values for each specified column.
-  # But don't wrap the "Value" column
+  # But don't wrap the "Value" and "Change" column
   # This is so labels and keys on the axes and legends will not cluttered the plot when the words got too long
-  if(x != "Value"){
+  if(!x %in% c("Value", "Change")){
     dat[, x] <- str_wrap(dat[, x], 20)
   }
-  if(y != "Value"){
+  if(!y %in% c("Value", "Change")){
     dat[, y] <- str_wrap(dat[, y], 20)
   }
-  if(facet != "Value"){
+  if(!facet %in% c("Value", "Change")){
     dat[, facet] <- str_wrap(dat[, facet], 20)
   }
   
