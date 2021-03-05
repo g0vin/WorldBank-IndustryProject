@@ -7,6 +7,8 @@
 # install.packages("shinyjs)
 #install.packages("rintrojs")
 # install.packages("readr")
+# install.packages("readxl")
+# install.packages("plyr")
 # install.packages("tidyverse")
 # install.packages("DT")
 # install.packages("rlang")
@@ -22,6 +24,8 @@ library(shinyjs)          # for hide() and show()
 library(rintrojs)         # for introBox()
 
 library(readr)            # for read_csv()
+library(readxl)           # for read_excel()
+library(plyr)             # for mapvalues()
 library(tidyverse)
 library(DT)
 library(rlang)            # for UQ()
@@ -63,11 +67,36 @@ if(!exists("inputs")) { inputs <<- list()}
 results <- read_csv("C:/Users/Owner/Downloads/results.csv")
 results <- results %>% mutate_if(is.character, as.factor) %>% mutate(Year = factor(Year))
 
+## CHANGE ABBREV TO READABLE TEXT-----------------------------------------------
+# Load the dictionary file that contains the real names of the abbreviations
+# Don't forget to change the path to where the dictionary file is located
+dict <- read_excel("C:/Users/Owner/Downloads/results real names.xlsm",
+                   sheet = "Lookup Table")
+
+# Take out all empty columns
+emptycols <- colSums(is.na(dict)) == nrow(dict)
+dict <- dict[!emptycols]
+
+# Rename the columns
+names(dict) <- c("Sim", "sim_name", "Var", "var_name", "Sec", "sec_name", "Qual", "qual_name")
+
+# Convert the abbreviations to readable text
+results$Simulation <- mapvalues(x = results$Simulation,
+                                from = dict$Sim, to = dict$sim_name,
+                                warn_missing = F)
+results$Variable <- mapvalues(x = results$Variable,
+                              from = dict$Var, to = dict$var_name,
+                              warn_missing = F)
+results$Sector <- mapvalues(x = results$Sector,
+                            from = dict$Sec, to = dict$sec_name, warn_missing = F)
+results$Qualifier <- mapvalues(x = results$Qualifier,
+                               from = dict$Qual, to = dict$qual_name,
+                               warn_missing = F)
 
 ## READ R CODE FROM OTHER FILES-------------------------------------------------
 # Make sure we are in the right directory to run the other code below. 
 # The path should be where ui.R, server.R, and other related R files should be located.
-setwd("C:/Users/Owner/Documents/GSB-503 Industry Project (World Bank)/WorldBank-IndustryProject")
+setwd("C:/Users/Owner/Documents/WorldBank-IndustryProject")
 
 # References the Intro_Help_Pages.R file where the code for creating the intro & help pages are located
 source("Intro_Help_Pages.R", local = T)
