@@ -442,11 +442,14 @@ ui <- function(request){
         div(
           id = "original_panel",
           column(width = 12,
+                 conditionalPanel(
+                   condition = "input.all_graphs > 0",
+                   plotlyOutput("plot")
+                 ),
+                 br(),
                  introBox(data.step = 5,
                           data.intro = intro$text[5],
-                          dataTableOutput("table")),
-                 br(),
-                 plotlyOutput("plot")
+                          dataTableOutput("table"))
           ) # End of column()
         ) # End of div()
       ), # End of fluidRow() - Original panel
@@ -456,8 +459,9 @@ ui <- function(request){
         div(
           id = "transformed_panel",
           column(width = 12,
-                 dataTableOutput("transfTab"),
-                 plotlyOutput("plotTransf")
+                 plotlyOutput("plotTransf"),
+                 br(),
+                 dataTableOutput("transfTab")
           )
         )
       ) # End of fluidRow() - transformed panel
