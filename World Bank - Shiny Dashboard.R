@@ -323,9 +323,17 @@ ui <- function(request){
           # Only show the other Graph options when we selected "Graph" in the input above
           conditionalPanel(
             condition = "input.displayTransf == 'Graph'",
-            selectizeInput(inputId = "plotType", label = "Plot Options", 
-                           choices = c("bar", "stack", "histogram", "line", 
-                                       "area", "bubble", "scatter", "boxplot")),
+            conditionalPanel(
+              condition = "input.typeConv != 'Proportion of Sector Per Year'",
+              selectizeInput(inputId = "plotType", label = "Plot Options",
+                             choices = c("bar", "stack", "histogram", "line", 
+                                         "area", "bubble", "scatter", "boxplot"))
+            ),
+            conditionalPanel(
+              condition = "input.typeConv == 'Proportion of Sector Per Year'",
+              selectizeInput(inputId = "plotType2", label = "Plot Options", 
+                             choices = c("bar", "stack"))
+            ),
             selectizeInput(inputId = "x_val_transf", label = "Please choose a variable as X", 
                            choices = c(colnames(results %>% select(!Value)), "Change"), 
                            selected = "Sector"),
@@ -336,6 +344,7 @@ ui <- function(request){
                            label = "Please choose a variable to facet by", 
                            choices = c(colnames(results %>% select(!Value)), "Change"), 
                            selected = "Year")
+            
           )
           
         ), # End of menuItem() - Transform Tables and Plot Options
@@ -809,9 +818,16 @@ server <- function(input, output, session) {
                      closeButton = T, type = "message")
  
     # Assign a new variable called p2 which plots the transformed plots  
-    p2 <- graphs(pivotTab, input$plotType, input$x_val_transf, 
-                input$y_val_transf, input$facet_transf)
-    output$plotTransf <- renderPlotly({ p2 })
+    if(input$typeConv == "Propotion of Sector Per Year") {
+      p2 <- graphs(pivotTab, input$plotType2, input$x_val_transf, 
+                   input$y_val_transf, input$facet_transf)
+      output$plotTransf <- renderPlotly({ p2 })
+    }
+    else {
+      p2 <- graphs(pivotTab, input$plotType, input$x_val_transf, 
+                   input$y_val_transf, input$facet_transf)
+      output$plotTransf <- renderPlotly({ p2 })
+    }
     
     #Output the transformed table and create a notification when it is successful  
     show("plotTransf")
