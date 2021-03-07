@@ -5,7 +5,7 @@
 # install.packages("shinyalert")
 # install.packages("shinyBS")
 # install.packages("shinyjs)
-#install.packages("rintrojs")
+# install.packages("rintrojs")
 # install.packages("readr")
 # install.packages("readxl")
 # install.packages("plyr")
@@ -65,7 +65,10 @@ if(!exists("inputs")) { inputs <<- list()}
 # Don't forget to change the path to where the results file is located
 # Any character data will be converted into factor variable. Same for the Year variable.
 results <- read_csv("C:/Users/Owner/Downloads/results.csv")
-results <- results %>% mutate_if(is.character, as.factor) %>% mutate(Year = factor(Year))
+results <- results %>% 
+              mutate_if(is.character, as.factor) %>% 
+              mutate(Year = factor(Year)) %>%
+              mutate(Value = round(Value, 3))
 
 ## CHANGE ABBREV TO READABLE TEXT-----------------------------------------------
 # Load the dictionary file that contains the real names of the abbreviations
