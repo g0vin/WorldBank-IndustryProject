@@ -1,3 +1,45 @@
+## GLOBAL VARIABLES-------------------------------------------------------------
+# Used to stored sets of selected inputs we want to save with their names
+# You will not lose the sets of selected inputs even if you close and re-load the app. But this doesn't apply when you close RStudio.
+if(!exists("sav_name")){ sav_name <<- NA}
+if(!exists("inputs")) { inputs <<- list()}
+
+
+## LOAD RESULTS FILE -----------------------------------------------------------
+# Read in the results file and do some data preparation. 
+# Don't forget to change the path to where the results file is located
+# Any character data will be converted into factor variable. Same for the Year variable.
+results <- read_csv("results.csv")
+results <- results %>% 
+              mutate_if(is.character, as.factor) %>% 
+              mutate(Year = factor(Year)) %>%
+              mutate(Value = round(Value, 3))
+
+## CHANGE ABBREV TO READABLE TEXT-----------------------------------------------
+# Load the dictionary file that contains the real names of the abbreviations
+# Don't forget to change the path to where the dictionary file is located
+dict <- read_excel("results-real-names.xlsm",
+                   sheet = "Lookup Table")
+
+# Take out all empty columns
+emptycols <- colSums(is.na(dict)) == nrow(dict)
+dict <- dict[!emptycols]
+
+# Rename the columns
+names(dict) <- c("Sim", "sim_name", "Var", "var_name", "Sec", "sec_name", "Qual", "qual_name")
+
+# Convert the abbreviations to readable text
+results$Simulation <- mapvalues(x = results$Simulation,
+                                from = dict$Sim, to = dict$sim_name,
+                                warn_missing = F)
+results$Variable <- mapvalues(x = results$Variable,
+                              from = dict$Var, to = dict$var_name,
+                              warn_missing = F)
+results$Sector <- mapvalues(x = results$Sector,
+                            from = dict$Sec, to = dict$sec_name, warn_missing = F)
+results$Qualifier <- mapvalues(x = results$Qualifier,
+                               from = dict$Qual, to = dict$qual_name,
+                               warn_missing = F)
 ## DEFINE SERVER---------------------------------------------------------------- 
 # Create the server which helps run the functions associated within the UI to create and manipulate the tables/graphs
 server <- function(input, output, session) {
