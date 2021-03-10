@@ -54,7 +54,7 @@ results <- results %>%
 ## CHANGE ABBREV TO READABLE TEXT-----------------------------------------------
 # Load the dictionary file that contains the real names of the abbreviations
 # Don't forget to change the path to where the dictionary file is located
-dict <- read_excel("C:/Users/Owner/Downloads/results real names.xlsm",
+dict <- read_excel("C:/Users/Owner/Downloads/results_real_names.xlsm",
                    sheet = "Lookup Table")
 
 # Take out all empty columns
