@@ -1,3 +1,20 @@
+library(shiny)
+library(shinyWidgets)
+library(shinydashboard)
+library(shinyalert)       # for shinyalert()
+library(shinyBS)          # for bsButton()
+library(shinyjs)          # for hide() and show()
+library(rintrojs)         # for introBox()
+
+library(readr)            # for read_csv()
+library(readxl)           # for read_excel()
+library(plyr)             # for mapvalues()
+library(tidyverse)
+library(DT)
+library(rlang)            # for UQ()
+library(plotly)
+library(ggplot2)
+
 ## GLOBAL VARIABLES-------------------------------------------------------------
 # Used to stored sets of selected inputs we want to save with their names
 # You will not lose the sets of selected inputs even if you close and re-load the app. But this doesn't apply when you close RStudio.
@@ -9,7 +26,7 @@ if(!exists("inputs")) { inputs <<- list()}
 # Read in the results file and do some data preparation. 
 # Don't forget to change the path to where the results file is located
 # Any character data will be converted into factor variable. Same for the Year variable.
-results <- read_csv("results.csv")
+results <- read_csv("/srv/shiny-server/worldbank/results.csv")
 results <- results %>% 
               mutate_if(is.character, as.factor) %>% 
               mutate(Year = factor(Year)) %>%
@@ -18,7 +35,7 @@ results <- results %>%
 ## CHANGE ABBREV TO READABLE TEXT-----------------------------------------------
 # Load the dictionary file that contains the real names of the abbreviations
 # Don't forget to change the path to where the dictionary file is located
-dict <- read_excel("results-real-names.xlsm",
+dict <- read_excel("/srv/shiny-server/worldbank/results-real-names.xlsm",
                    sheet = "Lookup Table")
 
 # Take out all empty columns
@@ -304,3 +321,15 @@ server <- function(input, output, session) {
   })
   
 } # End of the server
+
+# References the Intro_Help_Pages.R file where the code for creating the intro & help pages are located
+source("Intro_Help_Pages.R", local = T)
+
+# References the ui.R file where the ui(front-end) code is located
+source("ui.R", local = T)
+
+
+## CREATE SHINY APP-------------------------------------------------------------  
+# Connect the ui (front-end) with the server (back-end)
+shinyApp(ui = ui, server = server)
+
