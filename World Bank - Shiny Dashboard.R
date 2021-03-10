@@ -2,10 +2,10 @@
 # Install the packages needed to create the shiny application
 # install.packages("shiny")
 # install.packages("shinyWidgets")
-# install.packages("shinydashboard)
+# install.packages("shinydashboard")
 # install.packages("shinyalert")
 # install.packages("shinyBS")
-# install.packages("shinyjs)
+# install.packages("shinyjs")
 # install.packages("rintrojs")
 # install.packages("readr")
 # install.packages("readxl")
