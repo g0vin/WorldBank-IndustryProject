@@ -33,27 +33,6 @@ library(rlang)            # for UQ()
 library(plotly)
 library(ggplot2)
 
-## LOAD RData-------------------------------------------------------------------
-# Un-comment the code if you want to load the environment to re-use saved filters.
-# Don't forget to specify the path the RData file is saved in setwd()
-# Before that we need to clear the environment (so whatever the client save on their own will be erased when the app refreshed but not the one we pre-loaded in for them)
-
-# rm(list=ls())
-# setwd("C:/Users/Owner/Downloads")
-# load("saved_filters.RData")
-
-
-## SAVE RData-------------------------------------------------------------------
-# Un-comment if you want to save the environment. As long as the environment is saved before you close RStudio, you can load it back in and use the saved filters again.
-# Don't forget to specify the path you want the RData file to save in setwd()
-# Only do this step after you finish using the app. Only run this line of code individually.
-
-# setwd("C:/Users/Owner/Downloads")
-# if(length(sav_name) > 1 & length(inputs) > 0){
-#   save(sav_name, inputs, file = "saved_filters.RData")
-# }
-
-
 ## GLOBAL VARIABLES-------------------------------------------------------------
 # Used to stored sets of selected inputs we want to save with their names
 # You will not lose the sets of selected inputs even if you close and re-load the app. But this doesn't apply when you close RStudio.
