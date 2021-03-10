@@ -40,6 +40,8 @@ library(ggplot2)
 # rm(list=ls())
 # setwd("C:/Users/Owner/Downloads")
 # load("saved_filters.RData")
+# pre_sav_name <<- sav_name
+# pre_inputs <<- inputs
 
 
 ## SAVE RData-------------------------------------------------------------------
