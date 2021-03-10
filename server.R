@@ -2,19 +2,6 @@
 # Create the server which helps run the functions associated within the UI to create and manipulate the tables/graphs
 server <- function(input, output, session) {
   
-  # Reset everything when user refresh the page
-  # Plus empty out the saved filters unless it is pre-saved ones (aka permanent)
-  observeEvent("", {
-    if(!exists("pre_sav_name") && !exists("pre_inputs")){ 
-      sav_name <<- NA
-      inputs <<- list()
-    } else {
-      sav_name <<- pre_sav_name
-      inputs <<- pre_inputs
-    }
-    updateSelectizeInput(session, inputId = "sav_filters", choices = na.omit(sav_name))
-  })
-  
   # Show the introduction welcome page
   observeEvent("", {
     # showModal() to create the welcome page and Intro tour
